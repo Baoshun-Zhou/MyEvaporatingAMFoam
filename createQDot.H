@@ -39,24 +39,6 @@ volScalarField qDot
     //dimensionedScalar("qDot", dimensionSet(1, -1, -3, 0, 0, 0, 0), 0.0) // Default value = 0 W/m³
 );
 
-
-volScalarField qDot22
-(
-    IOobject
-    (
-        "qDot22", // Field name
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ, // Do not read from disk
-        IOobject::AUTO_WRITE // Automatically write when writing fields
-    ),
-    mesh,
-    dimensionedScalar("qDot22", dimensionSet(1, 0, -3, 0, 0, 0, 0), 0.0) // Default value = 0 W
-    //dimensionedScalar("qDot", dimensionSet(1, -1, -3, 0, 0, 0, 0), 0.0) // Default value = 0 W/m³
-);
-
-
-
 forAll(qDot, cellI)
 {
     const vector& C = mesh.C()[cellI];  // Get cell center coordinates
