@@ -35,8 +35,26 @@ volScalarField qDot
         IOobject::AUTO_WRITE // Automatically write when writing fields
     ),
     mesh,
-    dimensionedScalar("qDot", dimensionSet(1, -1, -3, 0, 0, 0, 0), 0.0) // Default value = 0 W/m³
+    dimensionedScalar("qDot", dimensionSet(1, 0, -3, 0, 0, 0, 0), 0.0) // Default value = 0 W
+    //dimensionedScalar("qDot", dimensionSet(1, -1, -3, 0, 0, 0, 0), 0.0) // Default value = 0 W/m³
 );
+
+
+volScalarField qDot22
+(
+    IOobject
+    (
+        "qDot22", // Field name
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ, // Do not read from disk
+        IOobject::AUTO_WRITE // Automatically write when writing fields
+    ),
+    mesh,
+    dimensionedScalar("qDot22", dimensionSet(1, 0, -3, 0, 0, 0, 0), 0.0) // Default value = 0 W
+    //dimensionedScalar("qDot", dimensionSet(1, -1, -3, 0, 0, 0, 0), 0.0) // Default value = 0 W/m³
+);
+
 
 
 forAll(qDot, cellI)
@@ -51,100 +69,17 @@ forAll(qDot, cellI)
     }
 }
 
-
-
-/*
-#include "fvCFD.H"
-#include "dictionary.H"
-
-Info << "Creating heat flux field qDot\n";
-
-//constant dictionary HeatFlux = readDictionary("constant/qDotDict");
-
-volScalarField p_rgh
+volScalarField qDot_interFace
 (
     IOobject
     (
-        "p_rgh",
-        runTime.timeName(),
-        mesh,
-        IOobject::MUST_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh
-);
-
-
-volScalarField dict
-(
-        dictFileName, // Name of your dictionary file (e.g., qDotDict)
-        runTime.constant(), // Look for the dictionary in the constant folder
-        mesh,
-        IOobject::MUST_READ, // Read the dictionary file
-        IOobject::AUTO_WRITE  // Automatically write if necessary
-);
-
-const scalar xMin = (readScalar(dict.lookup("xMin")));
-
-const scalar xMax(readScalar(dict.lookup("xMax")));
-const scalar yMin(readScalar(dict.lookup("yMin")));
-const scalar yMax(readScalar(dict.lookup("yMax")));
-const scalar zMin(readScalar(dict.lookup("zMin")));
-const scalar zMax(readScalar(dict.lookup("zMax")));
-
-
-
-//const scalar qdot_value =  HeatFlux.lookup("qdot_value");
-
-volScalarField qDot
-(
-    IOobject
-    (
-        "qDot", // Field name
+        "qDot_interFace", // Field name
         runTime.timeName(),
         mesh,
         IOobject::NO_READ, // Do not read from disk
         IOobject::AUTO_WRITE // Automatically write when writing fields
     ),
     mesh,
-    dimensionedScalar("qDot", dimensionSet(1, -1, -3, 0, 0, 0, 0), 0.0) // Default value = 0 W/m³
+    dimensionedScalar("qDot_interFace", dimensionSet(1, -1, -3, 0, 0, 0, 0), 0.0) // Default value = 0 W/m³
 );
 
-forAll(qDot, cellI)
-{
-    const vector& C = mesh.C()[cellI];  // Get cell center coordinates
-
-     // Define coordinate range where heat flux is applied
-    scalar xMin = 0.0002, xMax = 0.0018;
-    scalar yMin = 0.0018, yMax = 0.0022;
-    scalar zMin = 0.0, zMax = 1.0, qdot_value = 1e10;
-
-    if (C.x() >= xMin && C.x() <= xMax &&
-        C.y() >= yMin && C.y() <= yMax &&
-        C.z() >= zMin && C.z() <= zMax)
-    {
-        qDot[cellI] = qdot_value; // Example: Heat flux of 1 MW/m³
-    }
-}
-
-
-
-
-
-forAll(qDot, cellI)
-{
-    const vector& C = mesh.C()[cellI];  // Get cell center coordinates
-
-    // Define coordinate range where heat flux is applied
-    //scalar xMin = 0.0002, xMax = 0.0018;
-    //scalar yMin = 0.0018, yMax = 0.0022;
-    //scalar zMin = 0.0, zMax = 1.0;
-
-    if (C.x() >= xMin && C.x() <= xMax &&
-        C.y() >= yMin && C.y() <= yMax &&
-        C.z() >= zMin && C.z() <= zMax)
-    {
-        qDot[cellI] = qdot_value; // Example: Heat flux of 1 MW/m³
-    }
-}
-*/

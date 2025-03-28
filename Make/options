@@ -1,5 +1,7 @@
 EXE_INC = \
-    -IMyTemperaturePhaseChangeTwoPhaseMixtures/lnInclude \
+    -IMyTemperaturePhaseChangeTwoPhaseMixtures/twoPhaseMixtureEThermo\
+    -IMyTemperaturePhaseChangeTwoPhaseMixtures/thermoIncompressibleTwoPhaseMixture\
+    -IMyTemperaturePhaseChangeTwoPhaseMixtures/temperaturePhaseChangeTwoPhaseMixtures\
     -I$(LIB_SRC)/finiteVolume/lnInclude \
     -I$(LIB_SRC)/fvOptions/lnInclude\
     -I$(LIB_SRC)/meshTools/lnInclude \

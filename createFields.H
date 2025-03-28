@@ -155,3 +155,18 @@ volScalarField rhoCp
 
 rhoCp.oldTime();
 
+volScalarField thermalDamper
+(
+    IOobject
+    (
+        "thermalDamper",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("thermalDamper",dimless,1.0),
+    zeroGradientFvPatchScalarField::typeName
+);
+
