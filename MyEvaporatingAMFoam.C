@@ -57,7 +57,6 @@ Description
 #include "pimpleControl.H"
 #include "fvOptions.H"
 #include "CorrectPhi.H"
-//#include "HeatSource.H"
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -166,7 +165,7 @@ int main(int argc, char *argv[])
             #include "alphaEqnSubCycle.H"
 
             interface.correct();
-//            #include "createQDot.H"
+            #include "createQDot.H"
             #include "UEqn.H"
             #include "TEqn.H"
             // --- Pressure corrector loop

@@ -170,3 +170,20 @@ volScalarField thermalDamper
     zeroGradientFvPatchScalarField::typeName
 );
 
+
+
+volScalarField qDot_interFace
+(
+    IOobject
+    (
+        "qDot_interFace", // Field name
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,   // Do not read from disk
+        IOobject::AUTO_WRITE // Automatically write when writing fields
+    ),
+    mesh,
+    dimensionedScalar("qDot_interFace", dimensionSet(1, -1, -3, 0, 0, 0, 0), 0.0) // Default value = 0 W
+
+);
+

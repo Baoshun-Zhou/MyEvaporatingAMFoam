@@ -1,67 +1,67 @@
 Info << "Creating heat flux field qDot\n";
+#include <cmath>
+//#include "createFields.H"
 
-IOdictionary qDotDict
-(
-    IOobject
-    (
+IOdictionary qDotDict(
+    IOobject(
         "qDot",
-        runTime.constant(), //folder where the fvSolution file is located
+        runTime.constant(), // folder where the fvSolution file is located
         runTime,
         IOobject::MUST_READ,
-        IOobject::AUTO_WRITE
-    )
-);
+        IOobject::AUTO_WRITE));
 
-
-dictionary& meltingDict = qDotDict.subDict("HeatFlux");
+dictionary &meltingDict = qDotDict.subDict("HeatFlux");
 
 scalar qDot_value(readScalar(meltingDict.lookup("qDot_value")));
-scalar xMin(readScalar(meltingDict.lookup("xMin")));
-scalar xMax(readScalar(meltingDict.lookup("xMax")));
-scalar yMin(readScalar(meltingDict.lookup("yMin")));
-scalar yMax(readScalar(meltingDict.lookup("yMax")));
-scalar zMin(readScalar(meltingDict.lookup("zMin")));
-scalar zMax(readScalar(meltingDict.lookup("zMax")));
+scalar x_center(readScalar(meltingDict.lookup("x_center")));
+scalar y_center(readScalar(meltingDict.lookup("y_center")));
+scalar Radius_Flavour(readScalar(meltingDict.lookup("Radius_Flavour")));
+scalar radius(readScalar(meltingDict.lookup("radius")));
+scalar absorptivity(readScalar(meltingDict.lookup("absorptivity")));
+scalar dim(readScalar(meltingDict.lookup("dim")));
 
-
-volScalarField qDot
-(
-    IOobject
-    (
+volScalarField qDot(
+    IOobject(
         "qDot", // Field name
         runTime.timeName(),
         mesh,
-        IOobject::NO_READ, // Do not read from disk
+        IOobject::NO_READ,   // Do not read from disk
         IOobject::AUTO_WRITE // Automatically write when writing fields
-    ),
+        ),
     mesh,
     dimensionedScalar("qDot", dimensionSet(1, 0, -3, 0, 0, 0, 0), 0.0) // Default value = 0 W
-    //dimensionedScalar("qDot", dimensionSet(1, -1, -3, 0, 0, 0, 0), 0.0) // Default value = 0 W/m³
+    // dimensionedScalar("qDot", dimensionSet(1, -1, -3, 0, 0, 0, 0), 0.0) // Default value = 0 W/m³
 );
+
+
+volScalarField dist(
+    IOobject(
+        "dist", // Field name
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,   // Do not read from disk
+        IOobject::AUTO_WRITE // Automatically write when writing fields
+        ),
+    mesh,
+    dimensionedScalar("dist", dimensionSet(1, 0, 0, 0, 0, 0, 0), 0.0) // Default value = 0 W
+    // dimensionedScalar("qDot", dimensionSet(1, -1, -3, 0, 0, 0, 0), 0.0) // Default value = 0 W/m³
+);
+
 
 forAll(qDot, cellI)
 {
-    const vector& C = mesh.C()[cellI];  // Get cell center coordinates
-
-    if (C.x() >= xMin && C.x() <= xMax &&
-        C.y() >= yMin && C.y() <= yMax &&
-        C.z() >= zMin && C.z() <= zMax)
+    const scalar x_coord = mesh.C()[cellI].x(); // Get cell center coordinates
+    const scalar y_coord = mesh.C()[cellI].y();
+    //const scalar z_coord = mesh.C()[cellI].z();
+    if (dim == 2)
     {
-        qDot[cellI] = qDot_value; // Example: Heat flux of 1 MW/m³
+        dist[cellI] = Foam::sqrt(Foam::pow(x_coord - x_center, 2.0));
     }
-}
+    else if(dim == 3)
+    {
+        dist[cellI] = Foam::sqrt(Foam::pow(x_coord - x_center, 2.0) + Foam::pow(y_coord - y_center, 2.0) );
+    }
 
-volScalarField qDot_interFace
-(
-    IOobject
-    (
-        "qDot_interFace", // Field name
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ, // Do not read from disk
-        IOobject::AUTO_WRITE // Automatically write when writing fields
-    ),
-    mesh,
-    dimensionedScalar("qDot_interFace", dimensionSet(1, -1, -3, 0, 0, 0, 0), 0.0) // Default value = 0 W/m³
-);
+    qDot[cellI] = absorptivity * Radius_Flavour * qDot_value / ( M_PI * radius *radius) * Foam::exp(-Radius_Flavour * (dist[cellI] /radius)*(dist[cellI] /radius));
+}
 
